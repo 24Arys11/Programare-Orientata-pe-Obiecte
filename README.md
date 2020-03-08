@@ -1,2 +1,1 @@
-# StructDate-Alg
-Structuri de date si algoritmi
+# Programare orientata pe obiecte
