@@ -1,0 +1,383 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <bits/stdc++.h>
+#include <string>
+
+using namespace std;
+
+class Film{
+
+private:
+
+    string *denumire;
+    string *gen;
+    string *regizor;
+    double *rating;
+
+public:
+
+    Film(){
+
+        this->denumire = new string("Unknown");
+        this->gen = new string("Unknown");
+        this->regizor = new string("Unknown");
+        this->rating = new double(1.00);
+    }
+
+    Film(string denumire, string gen, string regizor, double rating){
+
+        this->denumire = new string(denumire);
+        this->gen = new string(gen);
+        this->regizor = new string(regizor);
+        this->rating = new double(rating);
+    }
+
+    Film(const Film &copy_from){
+
+        denumire = new string(*copy_from.denumire);
+        gen = new string(*copy_from.gen);
+        regizor = new string(*copy_from.regizor);
+        rating = new double(*copy_from.rating);
+    }
+
+    ~Film(){
+
+        delete denumire;
+        delete gen;
+        delete regizor;
+        delete rating;
+    }
+
+    void operator>>(string option){
+
+        bool valid_option = false;
+
+        if(option == "tot" || option == "denumire"){
+
+            valid_option = true;
+
+            cout << "Nume: ";
+            scanf(" ");
+            getline(cin, *denumire);
+
+            while((*denumire).length() > 20){
+                cout << "Numele contine prea multe caractere !" << endl;
+                cout << "Nume: ";
+                scanf(" ");
+                getline(cin, *denumire);
+            }
+        }
+
+        if(option == "tot" || option == "gen"){
+
+            valid_option = true;
+
+            cout << "Gen: ";
+            scanf(" ");
+            getline(cin, *gen);
+
+            while((*gen).size() > 15){
+                cout << "Genul contine prea multe caractere !" << endl;
+                cout << "Gen: ";
+                scanf(" ");
+                getline(cin, *gen);
+            }
+        }
+
+        if(option == "tot" || option == "regizor"){
+
+            valid_option = true;
+
+            cout << "Regizor: ";
+            scanf(" ");
+            getline(cin, *regizor);
+
+            while((*regizor).size() > 20){
+                cout << "Numele regizorului este prea lung (pune-i si tu o porecla) !" << endl;
+                cout << "Regizor: ";
+                scanf(" ");
+                getline(cin, *regizor);
+            }
+        }
+
+        if(option == "tot" || option == "rating"){
+
+            valid_option = true;
+
+            cout << "Rating: ";
+            cin >> *rating;
+        }
+
+        if(valid_option == false){
+            cout << "Invalid option !" << endl;
+        }
+    }
+
+    void operator<<(string option){
+
+        bool valid_option = false;
+
+        if(option == "tot" || option == "denumire"){
+
+            valid_option = true;
+
+            cout << *denumire;
+
+            for (int i = 21; i > (*denumire).size(); i--){    // Lasam spatiu mai mult sau mai putin in functie de denumire,
+                cout << " ";                                  // pentru a aranja afisarea sub forma de tabel.
+            }
+        }
+
+        if(option == "tot" || option == "gen"){
+
+            valid_option = true;
+
+            cout << *gen;
+
+            for (int i = 16; i > (*gen).size(); i--){         // Aceeasi explicatie ca mai sus !
+                cout << " ";
+            }
+        }
+
+        if(option == "tot" || option == "regizor"){
+
+            valid_option = true;
+
+            cout << *regizor;
+
+            for (int i = 21; i > (*regizor).size(); i--){     // Aceeasi explicatie ca mai sus !
+                cout << " ";
+            }
+        }
+
+        if(option == "tot" || option == "rating"){
+
+            valid_option = true;
+
+            cout << *rating << endl;                         // Intrucat este ultima intrare, nu mai e nevoie sa completam cu spatii.
+        }
+
+        if(valid_option == false){
+
+            cout << "Invalid option !" << endl;
+        }
+    }
+
+    bool operator=(Film f){
+
+        *denumire = *f.denumire;
+        *gen = *f.gen;
+        *regizor = *f.regizor;
+        *rating = *f.rating;
+    }
+
+    bool operator==(Film compare){
+
+        if (rating == compare.rating){                  // Intrucat avem constructor de copiere,
+            return true;                                // nu este nevoie sa supraincarcam operatorul "="
+        }else{                                          // ca si atribuire, astfel vom alege sa
+            return false;                               // supraincarcam operatorul "==" pentru comparatie.
+        }
+    }
+
+
+    bool operator>(Film compare){
+
+        if (rating > compare.rating){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    bool operator<(Film compare){
+
+        if (rating < compare.rating){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    void compare(Film f){
+
+        if(*rating == *f.rating){
+
+            cout << "Filmele sunt la fel de bune !" << endl;
+
+        }else if(*rating > *f.rating){
+
+            cout << "Filmul " << *denumire << " este mai bun decat " << *f.denumire << endl;
+
+        }else{
+
+            cout << "Filmul " << *f.denumire << " este mai bun decat " << *denumire << endl;
+        }
+    }
+};
+
+int main(){
+
+
+    /*
+        Nr.     Denumire             Gen             Regizor              Rating(IMDB)
+        01.     ____________________ _______________ ____________________ 01.00
+        ..............................................................................
+
+        1. Introduceti filme
+        2. Editati informatiile unui film
+        3. Comparati doua filme
+        4. Exit
+    */
+
+    int input = 0;
+    int numar_filme = 0;
+    int add_filme = 0;
+    int edit_film = 0;
+    int edit_input = 0;
+    int film_cmp1 = 0;
+    int film_cmp2 = 0;
+    char resume;
+
+    Film *film_list;
+    film_list = new Film[numar_filme];
+    Film *saved_film_list;
+
+    while(input != 4){
+
+        cout << "Nr. Denumire             Gen             Regizor              Rating(IMDB)" << endl;
+
+        if(numar_filme == 0){
+
+            cout << "Nu exista filme de afisat !" << endl;
+
+        }else{
+
+            for(int i = 0; i < numar_filme; i++){
+
+                if((i + 1) < 10){
+
+                    cout << "0" << (i + 1) << "  ";
+
+                }else{
+
+                    cout << (i + 1) << "  ";
+                }
+
+                film_list[i] << "tot";
+            }
+        }
+
+        cout << endl;
+
+        cout << "1. Adaugati filme" << endl;
+        cout << "2. Editati informatiile unui film" << endl;
+        cout << "3. Comparati doua filme" << endl;
+        cout << "4. Exit" << endl;
+
+        cin >> input;
+
+        while(input < 1 || input > 5){
+
+            cout << "Invalid input !" << endl;
+            cin >> input;
+        }
+
+        if(input == 1){
+
+            cout << "Cate filme doriti sa adaugati ?" << endl;
+            cin >> add_filme;
+
+            saved_film_list = new Film[numar_filme];
+
+            for(int i = 0; i < numar_filme; i ++){
+                saved_film_list[i] = film_list[i];
+            }
+
+            delete[] film_list;
+            film_list = new Film[numar_filme + add_filme];
+
+            for(int i = 0; i < numar_filme; i ++){
+                film_list[i] = saved_film_list[i];
+            }
+
+            for(int i = 0; i < add_filme; i++){
+                film_list[numar_filme + i] >> "tot";
+            }
+            numar_filme += add_filme;
+
+            delete[] saved_film_list;
+
+        }else if(input == 2){
+
+            cout << "Care film doriti sa-l editati ?" << endl;
+            cin >> edit_film;
+
+            cout << "Filmul selectat: ";
+            film_list[edit_film - 1] << "tot";
+
+            cout << "Ce doriti sa editati ?" << endl;
+            cout << "1. tot   2. denumirea   3. genul   4. regizorul   5. ratingul" << endl;
+            cin >> edit_input;
+
+            while(edit_input < 1 || edit_input > 5){
+
+                cout << "Invalid input !" << endl;
+                cin >> edit_input;
+            }
+
+            if(edit_input == 1){
+
+                film_list[edit_film - 1] >> "tot";
+
+            }else if(edit_input == 2){
+
+                film_list[edit_film - 1] >> "denumire";
+
+            }else if(edit_input == 3){
+
+                film_list[edit_film - 1] >> "gen";
+
+            }else if(edit_input == 4){
+
+                film_list[edit_film - 1] >> "regizor";
+
+            }else{
+
+                film_list[edit_film - 1] >> "rating";
+            }
+
+
+        }else if(input == 3){
+
+            cout << "Primul film: ";
+            cin >> film_cmp1;
+            cout << "Al doilea film: ";
+            cin >> film_cmp2;
+
+            cout << endl;
+
+            film_list[film_cmp1 - 1].compare(film_list[film_cmp2 - 1]);
+
+            resume = 'n';
+
+            while(!(resume == 'y' || resume == 'Y')){
+
+                cout << endl;
+                cout << "Press 'Y' to continue" << endl;
+                cin >> resume;
+            }
+
+        }else{
+            break;
+        }
+
+        cout << endl;
+    }
+
+    delete[] film_list;
+    delete[] saved_film_list;
+
+    return 0;
+}
