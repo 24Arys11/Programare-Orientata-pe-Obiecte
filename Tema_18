@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <bits/stdc++.h>
 #include <string>
+#include <time.h>
 
 using namespace std;
 
@@ -219,7 +220,7 @@ public:
 
 int main(){
 
-
+    srand(time(NULL));
     /*
         Nr.     Denumire             Gen             Regizor              Rating(IMDB)
         01.     ____________________ _______________ ____________________ 01.00
@@ -244,9 +245,14 @@ int main(){
     film_list = new Film[numar_filme];
     Film *saved_film_list;
 
+    bool first_run = 1;
+
     while(input != 4){
 
-        cout << "Nr. Denumire             Gen             Regizor              Rating(IMDB)" << endl;
+        if(first_run == 0){
+
+            cout << "Nr. Denumire             Gen             Regizor              Rating(IMDB)" << endl;
+        }
 
         if(numar_filme == 0){
 
@@ -278,7 +284,7 @@ int main(){
 
         cin >> input;
 
-        while(input < 1 || input > 5){
+        while(input < 1 || input > 4){
 
             cout << "Invalid input !" << endl;
             cin >> input;
@@ -311,62 +317,103 @@ int main(){
 
         }else if(input == 2){
 
-            cout << "Care film doriti sa-l editati ?" << endl;
-            cin >> edit_film;
+            if(numar_filme == 0){
 
-            cout << "Filmul selectat: ";
-            film_list[edit_film - 1] << "tot";
-
-            cout << "Ce doriti sa editati ?" << endl;
-            cout << "1. tot   2. denumirea   3. genul   4. regizorul   5. ratingul" << endl;
-            cin >> edit_input;
-
-            while(edit_input < 1 || edit_input > 5){
-
-                cout << "Invalid input !" << endl;
-                cin >> edit_input;
-            }
-
-            if(edit_input == 1){
-
-                film_list[edit_film - 1] >> "tot";
-
-            }else if(edit_input == 2){
-
-                film_list[edit_film - 1] >> "denumire";
-
-            }else if(edit_input == 3){
-
-                film_list[edit_film - 1] >> "gen";
-
-            }else if(edit_input == 4){
-
-                film_list[edit_film - 1] >> "regizor";
+                cout << "Nu sunt filme in sistem !" << endl;
 
             }else{
 
-                film_list[edit_film - 1] >> "rating";
-            }
+                cout << "Care film doriti sa-l editati ?" << endl;
+                cin >> edit_film;
 
+                while(edit_film < 1 || edit_film > numar_filme){
+
+                    cout << "Filmul selectat nu exista ! Alegeti un film din lista:" << endl;
+                    cin >> edit_film;
+
+                }
+
+                cout << "Filmul selectat: ";
+                film_list[edit_film - 1] << "tot";
+
+                cout << "Ce doriti sa editati ?" << endl;
+                cout << "1. tot   2. denumirea   3. genul   4. regizorul   5. ratingul" << endl;
+                cin >> edit_input;
+
+                while(edit_input < 1 || edit_input > 5){
+
+                    cout << "Input eronat ! Introduceti un numar natural intre 1 si 5." << endl;
+                    cin >> edit_input;
+                }
+
+                if(edit_input == 1){
+
+                    film_list[edit_film - 1] >> "tot";
+
+                }else if(edit_input == 2){
+
+                    film_list[edit_film - 1] >> "denumire";
+
+                }else if(edit_input == 3){
+
+                    film_list[edit_film - 1] >> "gen";
+
+                }else if(edit_input == 4){
+
+                    film_list[edit_film - 1] >> "regizor";
+
+                }else{
+
+                    film_list[edit_film - 1] >> "rating";
+                }
+
+            }
 
         }else if(input == 3){
 
-            cout << "Primul film: ";
-            cin >> film_cmp1;
-            cout << "Al doilea film: ";
-            cin >> film_cmp2;
+            if(numar_filme == 0){
 
-            cout << endl;
+                cout << "Nu sunt filme in sistem !" << endl;
 
-            film_list[film_cmp1 - 1].compare(film_list[film_cmp2 - 1]);
+            }else{
 
-            resume = 'n';
+                cout << "Primul film: ";
+                cin >> film_cmp1;
 
-            while(!(resume == 'y' || resume == 'Y')){
+                if(film_cmp1 < 1 || film_cmp1 > numar_filme){
+
+                    cout << "Ok, daca incerci sa-mi dai crash, aleg eu pentru tine !" << endl;
+                    film_cmp1 = (rand() % numar_filme) + 1;
+                    cout << "Am ales: ";
+                    film_list[film_cmp1 - 1] << "denumire";
+                    cout << endl;
+                }
+
+                cout << "Al doilea film: ";
+                cin >> film_cmp2;
+
+                if(film_cmp2 < 1 || film_cmp2 > numar_filme){
+
+                    cout << "Ok, daca incerci sa-mi dai crash, aleg eu pentru tine !" << endl;
+                    film_cmp2 = (rand() % numar_filme) + 1;
+                    cout << "Am ales: ";
+                    film_list[film_cmp2 - 1] << "denumire";
+                    cout << endl;
+
+                }
 
                 cout << endl;
-                cout << "Press 'Y' to continue" << endl;
-                cin >> resume;
+
+                film_list[film_cmp1 - 1].compare(film_list[film_cmp2 - 1]);
+
+                resume = 'n';
+
+                while(!(resume == 'y' || resume == 'Y')){
+
+                    cout << endl;
+                    cout << "Press 'Y' to continue" << endl;
+                    cin >> resume;
+                }
             }
 
         }else{
@@ -374,10 +421,14 @@ int main(){
         }
 
         cout << endl;
+        first_run = 0;
     }
 
+    cout << "Cleaning memory..." << endl;
     delete[] film_list;
-    delete[] saved_film_list;
+    /// Nu e nevoie sa stergem "saved_film_list", intrucat asta se intampla deja in program ! (vezi linia 316)
+
+    cout << "Fairwell !" << endl;
 
     return 0;
 }
