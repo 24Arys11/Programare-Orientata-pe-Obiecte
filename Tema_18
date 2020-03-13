@@ -7,38 +7,55 @@
 
 using namespace std;
 
+void scan_line(char* &text, int limit){
+
+    scanf(" ");
+    text = new char[limit];
+
+    int i;
+    for(i = 0; i < limit; i++){
+
+        scanf("%c", &text[i]);
+
+        if(text[i] == '\n'){
+            text[i] = '\0';
+            break;
+        }
+    }
+}
+
 class Film{
 
 private:
 
-    string *denumire;
-    string *gen;
-    string *regizor;
+    char **denumire;
+    char **gen;
+    char **regizor;
     double *rating;
 
 public:
 
     Film(){
 
-        this->denumire = new string("Unknown");
-        this->gen = new string("Unknown");
-        this->regizor = new string("Unknown");
+        this->denumire = new char *("Unknown");
+        this->gen = new char *("Unknown");
+        this->regizor = new char *("Unknown");
         this->rating = new double(1.00);
     }
 
-    Film(string denumire, string gen, string regizor, double rating){
+    Film(char *denumire, char *gen, char *regizor, double rating){
 
-        this->denumire = new string(denumire);
-        this->gen = new string(gen);
-        this->regizor = new string(regizor);
+        this->denumire = new char *(denumire);
+        this->gen = new char *(gen);
+        this->regizor = new char *(regizor);
         this->rating = new double(rating);
     }
 
     Film(const Film &copy_from){
 
-        denumire = new string(*copy_from.denumire);
-        gen = new string(*copy_from.gen);
-        regizor = new string(*copy_from.regizor);
+        denumire = new char *(*copy_from.denumire);
+        gen = new char *(*copy_from.gen);
+        regizor = new char *(*copy_from.regizor);
         rating = new double(*copy_from.rating);
     }
 
@@ -50,7 +67,7 @@ public:
         delete rating;
     }
 
-    void operator>>(string option){
+    void operator>>(char *option){
 
         bool valid_option = false;
 
@@ -59,14 +76,12 @@ public:
             valid_option = true;
 
             cout << "Nume: ";
-            scanf(" ");
-            getline(cin, *denumire);
+            scan_line(*denumire, 50);
 
-            while((*denumire).length() > 20){
+            while(strlen(*denumire) > 20){
                 cout << "Numele contine prea multe caractere !" << endl;
                 cout << "Nume: ";
-                scanf(" ");
-                getline(cin, *denumire);
+                scan_line(*denumire, 50);
             }
         }
 
@@ -75,14 +90,12 @@ public:
             valid_option = true;
 
             cout << "Gen: ";
-            scanf(" ");
-            getline(cin, *gen);
+            scan_line(*gen, 50);
 
-            while((*gen).size() > 15){
+            while(strlen(*gen) > 15){
                 cout << "Genul contine prea multe caractere !" << endl;
                 cout << "Gen: ";
-                scanf(" ");
-                getline(cin, *gen);
+                scan_line(*gen, 50);
             }
         }
 
@@ -91,14 +104,12 @@ public:
             valid_option = true;
 
             cout << "Regizor: ";
-            scanf(" ");
-            getline(cin, *regizor);
+            scan_line(*regizor, 50);
 
-            while((*regizor).size() > 20){
+            while(strlen(*regizor) > 20){
                 cout << "Numele regizorului este prea lung (pune-i si tu o porecla) !" << endl;
                 cout << "Regizor: ";
-                scanf(" ");
-                getline(cin, *regizor);
+                scan_line(*regizor, 50);
             }
         }
 
@@ -115,7 +126,7 @@ public:
         }
     }
 
-    void operator<<(string option){
+    void operator<<(char *option){
 
         bool valid_option = false;
 
@@ -125,7 +136,7 @@ public:
 
             cout << *denumire;
 
-            for (int i = 21; i > (*denumire).size(); i--){    // Lasam spatiu mai mult sau mai putin in functie de denumire,
+            for (int i = 21; i > strlen(*denumire); i--){    // Lasam spatiu mai mult sau mai putin in functie de denumire,
                 cout << " ";                                  // pentru a aranja afisarea sub forma de tabel.
             }
         }
@@ -136,7 +147,7 @@ public:
 
             cout << *gen;
 
-            for (int i = 16; i > (*gen).size(); i--){         // Aceeasi explicatie ca mai sus !
+            for (int i = 16; i > strlen(*gen); i--){         // Aceeasi explicatie ca mai sus !
                 cout << " ";
             }
         }
@@ -147,7 +158,7 @@ public:
 
             cout << *regizor;
 
-            for (int i = 21; i > (*regizor).size(); i--){     // Aceeasi explicatie ca mai sus !
+            for (int i = 21; i > strlen(*regizor); i--){     // Aceeasi explicatie ca mai sus !
                 cout << " ";
             }
         }
@@ -245,20 +256,15 @@ int main(){
     film_list = new Film[numar_filme];
     Film *saved_film_list;
 
-    bool first_run = 1;
-
     while(input != 4){
-
-        if(first_run == 0){
-
-            cout << "Nr. Denumire             Gen             Regizor              Rating(IMDB)" << endl;
-        }
 
         if(numar_filme == 0){
 
             cout << "Nu exista filme de afisat !" << endl;
 
         }else{
+
+            cout << "Nr. Denumire             Gen             Regizor              Rating(IMDB)" << endl;
 
             for(int i = 0; i < numar_filme; i++){
 
@@ -421,12 +427,11 @@ int main(){
         }
 
         cout << endl;
-        first_run = 0;
     }
 
     cout << "Cleaning memory..." << endl;
     delete[] film_list;
-    /// Nu e nevoie sa stergem "saved_film_list", intrucat asta se intampla deja in program ! (vezi linia 316)
+    /// Nu e nevoie sa stergem "saved_film_list", intrucat asta se intampla deja in program ! (vezi linia 322)
 
     cout << "Fairwell !" << endl;
 
