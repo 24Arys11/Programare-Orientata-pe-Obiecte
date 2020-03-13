@@ -61,9 +61,9 @@ public:
 
     ~Film(){
 
-        delete denumire;
-        delete gen;
-        delete regizor;
+        delete[] denumire;
+        delete[] gen;
+        delete[] regizor;
         delete rating;
     }
 
