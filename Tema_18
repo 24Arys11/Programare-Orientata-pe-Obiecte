@@ -176,7 +176,7 @@ public:
         }
     }
 
-    bool operator=(Film f){
+    void operator=(Film f){
 
         *denumire = *f.denumire;
         *gen = *f.gen;
