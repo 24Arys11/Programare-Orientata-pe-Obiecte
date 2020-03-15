@@ -186,10 +186,10 @@ public:
 
     bool operator==(Film compare){
 
-        if (rating == compare.rating){                  // Intrucat avem constructor de copiere,
-            return true;                                // nu este nevoie sa supraincarcam operatorul "="
-        }else{                                          // ca si atribuire, astfel vom alege sa
-            return false;                               // supraincarcam operatorul "==" pentru comparatie.
+        if (rating == compare.rating){
+            return true;
+        }else{
+            return false;
         }
     }
 
