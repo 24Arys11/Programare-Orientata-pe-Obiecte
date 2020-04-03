@@ -6,6 +6,10 @@ void Errors(int e){
         std::cout << "No elements to delete !" << std::endl;
     }else if(e == 1){
         std::cout << "Wrong parameter !" << std::endl;
+    }else if(e == 2){
+        std::cout << "Element not found !" << std::endl;
+    }else{
+        std::cout << "Unknown error !" << std::endl;
     }
 }
 
@@ -24,14 +28,14 @@ private:
 
 public:
 
-    LinkedList(){
+    LinkedList(){   /// CONSTRUCTOR
 
         first = NULL;
         last = NULL;
         elements = 0;
     }
 
-    ~LinkedList(){
+    ~LinkedList(){  /// DESTRUCTOR
 
         while(first != NULL){
             Node* temp = first;
@@ -42,15 +46,15 @@ public:
         delete[] last;
     }
 
-    int length(){
+    int length(){   /// returns the number of elements in the list
         return elements;
     }
 
-    Node head(){
+    Node head(){    /// returns the address of the first node
         return *first;
     }
 
-    void in(int number, int position){
+    void in(int number, int position){  /// inserts the specified number at specified position (-1 means at the end)
 
         if(position == 0){  /// Introducem elementul la inceput in complexitate O(1)
 
@@ -97,7 +101,7 @@ public:
         }
     }
 
-    void out(int position){
+    void out(int position){ /// removes the element at specified position
 
         if(elements == 0){
 
@@ -132,7 +136,7 @@ public:
         }
     }
 
-    Node operator<<(int position){
+    Node show(int position){  /// returns the element at specified position
 
         if((position == -1) || (position == (elements - 1))){
             return *last;
@@ -153,7 +157,49 @@ public:
         }
     }
 
-    void operator>>(int number){
+    void operator<<(int value){ /// removes the element with specified value (only the first one, in case it repeats)
+
+        if(elements == 0){
+
+            Errors(2);
+
+        }else{
+
+            if(first->data == value){  /// Stergem primul element !
+
+                Node* temp = first;
+                first = first->next;
+                delete[] temp;
+                elements--;
+
+            }else if(elements == 1){
+
+                Errors(2);
+            }else{
+
+                Node* temp = first;
+                Node* temp2 = first->next;
+
+                int i = 2; /// Contor. It starts at 2 because temp2 (first->next) is the 2nd element.
+                while(temp2->data != value){
+
+                    if(i == elements){
+                        Errors(2);
+                        return;
+                    }
+                    temp = temp->next;
+                    temp2 = temp2->next;
+                    i++;
+                }
+
+                temp->next = temp2->next;
+                delete[] temp2;
+                elements--;
+            }
+        }
+    }
+
+    void operator>>(int number){    /// If the list is sorted, inserts an alement to it's appropriate position
 
         if(elements == 0){
 
@@ -192,7 +238,7 @@ public:
         }
     }
 
-    void print(){
+    void print(){   /// Prints the list
 
         Node* temp = first;
         std::cout << "List has " << elements << " elements: ";
@@ -203,7 +249,7 @@ public:
         std::cout << temp->data << "." << std::endl;
     }
 
-    void sortare(){ /// Need to improve time complexity !
+    void sortare(){ /// Sorts the list in O(n^2) ! Need to improve time complexity !
 
         LinkedList* l = new LinkedList;
         int numberOfEements = elements;
