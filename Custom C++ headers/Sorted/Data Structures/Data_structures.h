@@ -136,7 +136,7 @@ public:
         }
     }
 
-    Node show(int position){  /// returns the element at specified position
+    Node operator[](int position){  /// returns the element at specified position
 
         if((position == -1) || (position == (elements - 1))){
             return *last;
