@@ -13,18 +13,28 @@ void Errors(int e){
     }
 }
 
-struct Node{
+template <class T>
+struct Node{    /// for  linked lists
 
-    int data;
+    T data;
     Node *next;
 };
 
+template <class T>
+struct DlNode{  /// for double linked lists (urmeaza...)
+
+    T data;
+    DlNode *prev;
+    DlNode *next;
+};
+
+template <class T>
 class LinkedList{
 private:
 
     int elements;
-    Node* first;
-    Node* last;
+    Node<T>* first;
+    Node<T>* last;
 
 public:
 
@@ -38,27 +48,27 @@ public:
     ~LinkedList(){  /// DESTRUCTOR
 
         while(first != NULL){
-            Node* temp = first;
+            Node<T>* temp = first;
             first=first->next;
-            delete[] temp;
+            delete temp;
         }
-        delete[] first;
-        delete[] last;
+        delete first;
+        delete last;
     }
 
     int length(){   /// returns the number of elements in the list
         return elements;
     }
 
-    Node head(){    /// returns the address of the first node
+    Node<T> head(){    /// returns the address of the first node
         return *first;
     }
 
-    void in(int number, int position){  /// inserts the specified number at specified position (-1 means at the end)
+    void in(T number, int position){  /// inserts the specified number at specified position (-1 means at the end)
 
         if(position == 0){  /// Introducem elementul la inceput in complexitate O(1)
 
-            Node* temp = new Node;
+            Node<T>* temp = new Node<T>;
             temp->data = number;
             temp->next = first;
             first = temp;
@@ -69,7 +79,7 @@ public:
 
         }else if((position == -1) || (position == elements)){ /// Introducem elementul la sfarsit in complexitate O(1)
 
-            Node* temp = new Node;
+            Node<T>* temp = new Node<T>;
             temp->data = number;
             temp->next = NULL;
             if(elements == 0){
@@ -86,14 +96,14 @@ public:
 
         }else{  /// Introducem elementul la pozitia specificata in complexitate O(n)
 
-            Node* temp = new Node;
+            Node<T>* temp = new Node<T>;
             temp = first;
 
             for(int i = 1; i < position; i++){
             /// Parcurgem lista pana la elementul de pe pozitia dorita
                 temp = temp->next;
             }
-            Node* temp2 = new Node;
+            Node<T>* temp2 = new Node<T>;
             temp2->data = number;
             temp2->next = temp->next;
             temp->next = temp2;
@@ -116,27 +126,27 @@ public:
 
             if(position == 0){  /// Stergem primul element !
 
-                Node* temp = first;
+                Node<T>* temp = first;
                 first = first->next;
-                delete[] temp;
+                delete temp;
                 elements--;
 
             }else{
 
-                Node* temp = first;
+                Node<T>* temp = first;
                 for(int i = 1; i < position; i++){
                     temp = temp->next;
                 }
-                Node* temp2 = temp;
+                Node<T>* temp2 = temp;
                     temp = temp->next;
                     temp2->next = temp->next;
-                delete[] temp;
+                delete temp;
                 elements--;
             }
         }
     }
 
-    Node operator[](int position){  /// returns the element at specified position
+    Node<T> operator[](int position){  /// returns the element at specified position
 
         if((position == -1) || (position == (elements - 1))){
             return *last;
@@ -146,7 +156,7 @@ public:
 
         }else{
 
-            Node* temp = new Node;
+            Node<T>* temp = new Node<T>;
             temp = first;
 
             for(int i = 0; i < position; i++){
@@ -157,7 +167,7 @@ public:
         }
     }
 
-    void operator<<(int value){ /// removes the element with specified value (only the first one, in case it repeats)
+    void operator<<(T value){ /// removes the element with specified value (only the first one, in case it repeats)
 
         if(elements == 0){
 
@@ -167,9 +177,9 @@ public:
 
             if(first->data == value){  /// Stergem primul element !
 
-                Node* temp = first;
+                Node<T>* temp = first;
                 first = first->next;
-                delete[] temp;
+                delete temp;
                 elements--;
 
             }else if(elements == 1){
@@ -177,8 +187,8 @@ public:
                 Errors(2);
             }else{
 
-                Node* temp = first;
-                Node* temp2 = first->next;
+                Node<T>* temp = first;
+                Node<T>* temp2 = first->next;
 
                 int i = 2; /// Contor. It starts at 2 because temp2 (first->next) is the 2nd element.
                 while(temp2->data != value){
@@ -193,17 +203,17 @@ public:
                 }
 
                 temp->next = temp2->next;
-                delete[] temp2;
+                delete temp2;
                 elements--;
             }
         }
     }
 
-    void operator>>(int number){    /// If the list is sorted, inserts an alement to it's appropriate position
+    void operator>>(T number){    /// If the list is sorted, inserts an alement to it's appropriate position
 
         if(elements == 0){
 
-            Node* temp = new Node;
+            Node<T>* temp = new Node<T>;
             temp->data = number;
             temp->next = first;
             first = temp;
@@ -218,15 +228,15 @@ public:
                     this->in(number, 0);
                 }else{
 
-                    Node* temp = new Node;
-                    Node* temp2 = new Node;
+                    Node<T>* temp = new Node<T>;
+                    Node<T>* temp2 = new Node<T>;
                     temp = first;
 
                     while(number > temp->data){
                         temp2 = temp;
                         temp = temp->next;
                     }
-                    Node* temp3 = new Node;
+                    Node<T>* temp3 = new Node<T>;
                     temp3->data = number;
                     temp3->next = temp2->next;
                     temp2->next = temp3;
@@ -240,10 +250,10 @@ public:
 
     void print(){   /// Prints the list
 
-        Node* temp = first;
+        Node<T>* temp = first;
         std::cout << "List has " << elements << " elements: ";
         while(temp->next != NULL){
-            std::cout << temp->data << " ";
+            std::cout << temp->data << "   ";
             temp = temp->next;
         }
         std::cout << temp->data << "." << std::endl;
