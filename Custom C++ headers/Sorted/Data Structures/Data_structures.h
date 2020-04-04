@@ -64,12 +64,12 @@ public:
         return *first;
     }
 
-    void in(T number, int position){  /// inserts the specified number at specified position (-1 means at the end)
+    void in(T item, int position){  /// inserts the specified item at specified position (-1 means at the end)
 
         if(position == 0){  /// Introducem elementul la inceput in complexitate O(1)
 
             Node<T>* temp = new Node<T>;
-            temp->data = number;
+            temp->data = item;
             temp->next = first;
             first = temp;
             if(elements == 0){
@@ -80,7 +80,7 @@ public:
         }else if((position == -1) || (position == elements)){ /// Introducem elementul la sfarsit in complexitate O(1)
 
             Node<T>* temp = new Node<T>;
-            temp->data = number;
+            temp->data = item;
             temp->next = NULL;
             if(elements == 0){
                 first = temp;
@@ -104,7 +104,7 @@ public:
                 temp = temp->next;
             }
             Node<T>* temp2 = new Node<T>;
-            temp2->data = number;
+            temp2->data = item;
             temp2->next = temp->next;
             temp->next = temp2;
             elements++;
@@ -209,12 +209,12 @@ public:
         }
     }
 
-    void operator>>(T number){    /// If the list is sorted, inserts an alement to it's appropriate position
+    void operator>>(T item){    /// If the list is sorted, inserts an alement to it's appropriate position
 
         if(elements == 0){
 
             Node<T>* temp = new Node<T>;
-            temp->data = number;
+            temp->data = item;
             temp->next = first;
             first = temp;
             last = temp;
@@ -222,28 +222,29 @@ public:
 
         }else{
 
-            if(number < last->data){
+            if(item < last->data){
 
-                if(number < first->data){
-                    this->in(number, 0);
+                if(item <= first->data){
+                    this->in(item, 0);
                 }else{
 
                     Node<T>* temp = new Node<T>;
                     Node<T>* temp2 = new Node<T>;
                     temp = first;
+                    temp2 = first;
 
-                    while(number > temp->data){
+                    while(item > temp->data){
                         temp2 = temp;
                         temp = temp->next;
                     }
                     Node<T>* temp3 = new Node<T>;
-                    temp3->data = number;
+                    temp3->data = item;
                     temp3->next = temp2->next;
                     temp2->next = temp3;
                     elements++;
                 }
             }else{
-                this->in(number, -1);
+                this->in(item, -1);
             }
         }
     }
@@ -262,7 +263,7 @@ public:
     void sortare(){ /// Sorts the list in O(n^2) ! Need to improve time complexity !
 
         LinkedList* l = new LinkedList;
-        int numberOfEements = elements;
+        int nrOfEements = elements;
 
         while(first != NULL){
 
@@ -271,6 +272,6 @@ public:
         }
 
         first = l->first;
-        elements = numberOfEements;
+        elements = nrOfEements;
     }
 };
