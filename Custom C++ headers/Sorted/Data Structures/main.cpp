@@ -1,5 +1,4 @@
-#include <string>
-#include "Data_structures.h"
+#include "data_structures.h"
 
 using namespace std;
 
@@ -7,90 +6,39 @@ int main()
 {
     cout << "CITITI COMENTARIILE DIN main() PENTRU A VEDEA CE AR TREBUI SA FACA FIECARE FUNCTIE !" << endl;
     cout << "Test cu date de tip int:" << endl;
-    LinkedList <int> l;
+    LinkedList <int> l; /// merge schimbat tipul din int in char, string, orice..
 
-    l >> 1;
-    l >> 5;
-    l >> 3;
-    l >> 2;
-    l >> 4;
+    l >> 1;    l >> 2;    l >> 2;    l >> 1;    l >> 3;
 
     /// Operatorul ">>" adauga elementele la locul lor (in ordine), daca lista este deja sortata.
 
-    cout << "Am executat: l >> 1;    l >> 5;    l >> 3;    l >> 2;    l >> 4;" << endl;
+    cout << "Am executat: l >> 1;    l >> 2;    l >> 2;    l >> 1;    l >> 3;" << endl;
 
-    l.print();
+    /// What you can do:
 
-    l.in(12, 2); /// Adauga elementul 12 la pozitia 2, numarand de la zero. (adica al treilea element din lista va fi 12)
+    /// l >> element; - baga un element intr-o lista sortata, la locul potrivit ! (lista ramane sortata)
 
-    cout << "Am executat: l.in(12, 2);" << endl;
+    /// l << element; - Cauta si sterge elementul din lista. (indiferent de pozitia pe care se afla)
 
-    l.print();
+    /// l.print(); - afiseaza lista si spune cate elemente are.
 
-    cout << "Elem de pe pozitia 2 (am executat: \"l[2].data\") este: " << l[2].data << endl; /// Returneaza elementul de pe pozitia 2;
+    /// l.check(); - afiseaza lista si spune cate elemente are. afiseaza detalii despre primul element (adresa) si ultimul element (adresa, data, *next) (next trebuie sa fie 0, adica pointerul NULL, pt ca daca e ultumul, nu mai exista alt element dupa el)
 
-    l.sortare(); /// Sorteaza lista in complexitate O(n^2). E de proba deocamdata. O sa o imbunatatesc la O(n*log(n)) !
+    /// l.in(type item, int pozitie); - Adauga elementul "item" la pozitia "pozitie", numarand de la zero. (type trebuie sa fie tipul listei ! De ex. pentru "LinkedList <int> l;" e tip int)
 
-    cout << "Am executat: l.sortare();" << endl;
+    /// l.out(int pozitie); - Sterge elementul de pe pozitia "pozitie" din lista ! (numarand de la 0)
+                        /// - Exista si un shortcut l.out(-1); sterge elementul de pe ultima pozitie, ca sa nu mai apelezi l.length()... NU merge cu alte numere negative sau invalide..
 
-    l.print();
+    /// l[2].data << endl; - l[n] Returneaza nodul de pe pozitia n; Putem accesa l[n].data sau l[n].next. La fel ca la vectori, n trebuie sa fie o pozitie valida (n < nr de elemente) !
 
-    l << 12; /// Sterge elementul 12 din lista. (indiferent de pozitia pe care se afla)
+    /// l.sortare(); - Sorteaza lista in complexitate O(n^2). E de proba deocamdata. O sa o imbunatatesc la O(n*log(n)) ! merge si cu stringuri, orice tip de date. (inclusiv custom made, daca are operatorii de comparatie definiti).
 
-    cout << "Am executat: l << 12;" << endl;
+    /// COMPARARE A 2 LISTE CU ELEM DE ACELASI TIP: (returneaza true sau false, adica 1 sau 0)
+            /// l1 == l2    l1 != l2    l1 < l2     l1 > l2     l1 <= l2    l1 >= l2
 
-    l.print();
+    /// ATRIBUIRE l1 = l2;
 
-    l.out(2); /// Sterge elementul de pe pozitia 2 din lista ! (numarand de la 0)
-
-    cout << "Am executat: l.out(2);" << endl;
-
-    l.print();
-
-    cout << endl;
-
-    cout << "Test cu date de tip char:" << endl;
-    LinkedList <char> k;
-
-    k >> 'a';
-    k >> 'e';
-    k >> 'c';
-    k >> 'b';
-    k >> 'd';
-
-    /// Operatorul ">>" adauga elementele la locul lor (in ordine), daca lista este deja sortata.
-
-    cout << "Am executat: k >> 'a';    k >> 'e';    k >> 'c';    k >> 'b';    k >> 'd';" << endl;
-
-    k.print();
-
-    k.in('q', 2); /// Adauga elementul 'q' la pozitia 2, numarand de la zero. (adica al treilea element din lista va fi q)
-
-    cout << "Am executat: k.in('q', 2);" << endl;
-
-    k.print();
-
-    cout << "Elem de pe pozitia 2 (am executat: \"k[2].data\") este: " << k[2].data << endl; /// Returneaza elementul de pe pozitia 2;
-
-    k.sortare(); /// Sorteaza lista in complexitate O(n^2). E de proba deocamdata. O sa o imbunatatesc la O(n*log(n)) !
-
-    cout << "Am executat: k.sortare();" << endl;
-
-    k.print();
-
-    k << 'q'; /// Sterge elementul 'q' din lista. (indiferent de pozitia pe care se afla)
-
-    cout << "Am executat: k << 'q';" << endl;
-
-    k.print();
-
-    k.out(2); /// Sterge elementul de pe pozitia 2 din lista ! (numarand de la 0)
-
-    cout << "Am executat: k.out(2);" << endl;
-
-    k.print();
-
-    cout << endl;
+    /// CONSTRUCTOR DE COPIERE: LinkedList <any type> l1 = l2; (l2 trebuie sa fie de acelasi tip). La initializare nu functioneaza operatorul de atribuire ! Este nevoie de constructor de copiere..
 
     cout << "Test cu date de tip string:" << endl;
     LinkedList <string> s;
@@ -98,40 +46,41 @@ int main()
     s >> "abc";
     s >> "erl tm";
     s >> "cear";
-    s >> "bdsada";
-    s >> "dsadas";
-
-    /// Operatorul ">>" adauga elementele la locul lor (in ordine), daca lista este deja sortata.
-
-    cout << "Am executat: s >> \"abc\";    s >> \"erl tm\";    s >> \"cear\";    s >> \"bdsada\";    s >> \"dsadas\";" << endl;
 
     s.print();
 
     s.in("qtr py", 2); /// Adauga elementul "qtr py" la pozitia 2, numarand de la zero. (adica al treilea element din lista va fi "qtr py")
 
-    cout << "Am executat: s.in(\"qtr py\", 2);" << endl;
-
     s.print();
-
-    cout << "Elem de pe pozitia 2 (am executat: \"s[2].data\") este: " << s[2].data << endl; /// Returneaza elementul de pe pozitia 2;
 
     s.sortare(); /// Sorteaza lista in complexitate O(n^2). E de proba deocamdata. O sa o imbunatatesc la O(n*log(n)) !
 
-    cout << "Am executat: s.sortare();" << endl;
-
     s.print();
 
-    s << "qtr py"; /// Sterge elementul "qtr py" din lista. (indiferent de pozitia pe care se afla)
+    cout << endl;
 
-    cout << "Am executat: s << \"qtr py\";" << endl;
+    LinkedList <int> m;
 
-    s.print();
+    m >> 5;
+    m >> 8;
+    m >> 5;
+    m >> 9;
 
-    s.out(2); /// Sterge elementul de pe pozitia 2 din lista ! (numarand de la 0)
+    l.print();
+    m.print();
 
-    cout << "Am executat: s.out(2);" << endl;
+    cout << "(l < m) = " << (l < m) << endl;
 
-    s.print();
+    l = m;
+
+    l.print();
+    m.print();
+
+    cout << endl;
+
+    m.check();
+
+    cout << endl;
 
     return 0;
 }
