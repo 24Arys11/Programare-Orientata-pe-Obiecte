@@ -1,4 +1,15 @@
+#ifndef DATASTRUCTURES_H_INCLUDED
+#define DATASTRUCTURES_H_INCLUDED
+
 #include <iostream>
+#include <algorithm>
+#include <stack>
+#include <queue>
+
+#define left prev
+#define right next
+
+namespace dtk{  /// Darius The King ;)
 
 void Errors(int e){
 
@@ -6,8 +17,6 @@ void Errors(int e){
         std::cout << "No elements to delete !" << std::endl;
     }else if(e == 1){
         std::cout << "Wrong parameter !" << std::endl;
-    }else if(e == 2){
-        std::cout << "Element not found !" << std::endl;
     }else{
         std::cout << "Unknown error !" << std::endl;
     }
@@ -21,11 +30,11 @@ struct Node{    /// for  linked lists
 };
 
 template <class T>
-struct DlNode{  /// for double linked lists (urmeaza...)
+struct DlNode{  /// for double linked lists & binary search trees
 
     T data;
-    DlNode *prev;
-    DlNode *next;
+    DlNode *prev;   /// left (defined)
+    DlNode *next;   /// right (defined)
 };
 
 template <class T>
@@ -78,19 +87,13 @@ public:
 
     LinkedList& operator=(const LinkedList& l){
 
-        if(this->elements > 0){  /// If the list is not empty, make it empty !
+        if(l.elements == 0){  /// If the list is not empty, make it empty !
 
-            LinkedList<T>* temporary = new LinkedList<T>;
-
-            temporary->first = this->first;
-            temporary->elements = this->elements;
-
-            delete temporary;
-
-            this->first = NULL;
-            this->last = NULL;
-            this->elements = 0;
+            this->empty();
+            return *this;
         }
+
+        this->empty();
 
         Node<T>* temp = new Node<T>;
         temp = l.first;
@@ -103,17 +106,15 @@ public:
 
         temp = NULL;
         delete temp;
+
+        return *this;
     }
 
     int length(){   /// returns the number of elements in the list
         return elements;
     }
 
-    Node<T> head(){    /// returns the address of the first node
-        return *first;
-    }
-
-    void in(T item, int position){  /// inserts the specified item at specified position (-1 means at the end)
+    LinkedList& in(T item, int position){  /// inserts the specified item at specified position (-1 means at the end)
 
         if(position == 0){  /// Introducem elementul la inceput in complexitate O(1)
 
@@ -158,9 +159,10 @@ public:
             temp->next = temp2;
             elements++;
         }
+        return *this;
     }
 
-    void out(int position){ /// removes the element at specified position
+    LinkedList& out(int position){ /// removes the element at specified position
 
         if(elements == 0){
 
@@ -175,14 +177,22 @@ public:
 
             if(position == 0){  /// Stergem primul element !
 
-                Node<T>* temp = first;
+                Node<T>* temp = new Node<T>;
+                temp = first;
                 first = first->next;
                 delete temp;
+
+                if(elements == 1){
+
+                    last = NULL;
+                }
+
                 elements--;
 
             }else{
 
-                Node<T>* temp = first;
+                Node<T>* temp = new Node<T>;
+                temp = first;
                 for(int i = 1; i < position; i++){
                     temp = temp->next;
                 }
@@ -196,12 +206,25 @@ public:
                 elements--;
             }
         }
+        return *this;
     }
 
-    Node<T> operator[](int position){  /// returns the element at specified position
+    LinkedList& empty(){
 
-        if((position == -1) || (position == (elements - 1))){
-            return *last;
+        int limit = this->elements;
+        for(int i = 0; i < limit; i++){
+
+            this->out(0);
+        }
+        return *this;
+    }
+
+    T& operator[](int position){  /// returns the element at specified position
+
+        if(elements == 0){
+            Errors(1);
+        }else if((position == -1) || (position == (elements - 1))){
+            return last->data;
         }else if((position < -1) || (position >= elements)){  /// Error: "Wrong parameter !"
 
             Errors(1);
@@ -215,56 +238,52 @@ public:
             /// Parcurgem lista pana la elementul de pe pozitia dorita
                 temp = temp->next;
             }
-            return *temp;
+            return temp->data;
         }
     }
 
-    void operator<<(T value){ /// removes the element with specified value (only the first one, in case it repeats)
+    LinkedList& operator<<(T value){ /// removes the element with specified value (only the first one, in case it repeats)
 
         if(elements == 0){
 
-            Errors(2);
+            return *this;
+        }
 
-        }else{
+        if(first->data == value){  /// Stergem primul element !
 
-            if(first->data == value){  /// Stergem primul element !
+            this->out(0);
+            return *this;
+        }
 
-                Node<T>* temp = first;
-                first = first->next;
-                delete temp;
-                elements--;
+        if(elements > 1){
 
-            }else if(elements == 1){
+            Node<T>* temp = first;
+            Node<T>* temp2 = first->next;
 
-                Errors(2);
-            }else{
+            for(int i = 1; i < elements; i++){
 
-                Node<T>* temp = first;
-                Node<T>* temp2 = first->next;
+                if(temp2->data == value){
 
-                int i = 2; /// Contor. It starts at 2 because temp2 (first->next) is the 2nd element.
-                while((temp2->data != value) && (temp2->next != NULL)){
+                    temp->next = temp2->next;
+                    delete temp2;
+                    elements--;
 
-                    if(i >= elements){
-                        Errors(2);
-                        return;
+                    if(temp->next == NULL){
+                        last = temp;
                     }
-                    temp = temp2;
-                    temp2 = temp2->next;
-                    i++;
+
+                    return *this;
                 }
 
-                temp->next = temp2->next;
-                delete temp2;
-                if(temp->next == NULL){
-                    last = temp;
-                }
-                elements--;
+                temp = temp->next;
+                temp2 = temp2->next;
             }
         }
+
+        return *this;
     }
 
-    void operator>>(T item){    /// If the list is sorted, inserts an alement to it's appropriate position
+    LinkedList& operator>>(T item){    /// If the list is sorted, inserts an element to it's appropriate position.
 
         if(elements == 0){
 
@@ -302,6 +321,7 @@ public:
                 this->in(item, -1);
             }
         }
+        return *this;
     }
 
     bool operator==(const LinkedList& l){
@@ -379,6 +399,11 @@ public:
         }
 
         if((this->elements != 0) && (l.elements == 0)){
+
+            return false;
+        }
+
+        if((this->elements == 0) && (l.elements == 0)){
 
             return false;
         }
@@ -484,6 +509,11 @@ public:
             return true;
         }
 
+        if((this->elements == 0) && (l.elements == 0)){
+
+            return false;
+        }
+
         /// If we got so far, it means that none of the two lists is empty !
 
         if(this->first->data != l.first->data){
@@ -583,19 +613,159 @@ public:
         return !(*this < l);
     }
 
-    void sortare(){ /// Sorts the list in O(n^2) ! Need to improve time complexity !
+    LinkedList& operator+(const LinkedList& l){
 
-        LinkedList* l = new LinkedList;
-        int nrOfEements = elements;
+        LinkedList *sum = new LinkedList;
+        *sum = *this;
+        LinkedList *supplement = new LinkedList;
+        *supplement = l;
+        sum->last->next = supplement->first;
+        sum->last = supplement->last;
+        sum->elements += l.elements;
 
-        while(first != NULL){
+        return *sum;
+    }
 
-            *l >> first->data;
+    LinkedList& operator+=(const LinkedList& l){
+
+        LinkedList *supplement = new LinkedList;
+        *supplement = l;
+        this->last->next = supplement->first;
+        this->last = supplement->last;
+        this->elements += l.elements;
+
+        return *this;
+    }
+
+    LinkedList& operator-(const LinkedList& l){
+
+        LinkedList *dif = new LinkedList;
+        *dif = *this;
+        LinkedList *drop = new LinkedList;
+        *drop = l;
+
+        if(drop->elements == 0){
+
+            return *dif;
+        }
+
+        for(int i = 0; i < l.elements; i++){
+
+            *dif << (drop->first->data);
+            drop->out(0);
+        }
+        return *dif;
+    }
+
+    LinkedList& operator-=(const LinkedList& l){
+
+        LinkedList *drop = new LinkedList;
+        *drop = l;
+
+        if(drop->elements == 0){
+
+            return *this;
+        }
+
+        for(int i = 0; i < l.elements; i++){
+
+            *this << (drop->first->data);
+            drop->out(0);
+        }
+        return *this;
+    }
+
+    LinkedList& fuse(const LinkedList& l){    /// Merge 2 lists together. If both lists are sorted, the resulting one will be sorted in O(n).
+
+        if(elements == 0){  /// If *this is empty
+
+            *this = l;
+            return *this;
+
+        }else if(l.elements == 0){
+
+            return *this;
+
+        }else{  /// None of the lists is empty !
+
+            int limit = this->elements + l.elements;
+            LinkedList<T> k = *this;
+            Node<T> *temp = k.first;    /// LIST 1
+            Node<T> *temp2 = l.first;   /// LIST 2
+            this->empty();              /// RESULT
+
+            for(int i = 0; i < limit; i++){
+
+                if(temp->data < temp2->data){
+
+                    this->in(temp->data, -1);
+
+                    if(temp->next != NULL){
+
+                        temp = temp->next;
+
+                    }else{
+
+                        while(temp2->next != NULL){
+
+                            this->in(temp2->data, -1);
+                            temp2 = temp2->next;
+                            i++;
+                        }
+
+                        this->in(temp2->data, -1);   /// do{}while(); is not appropriate because of "temp2 = temp2->next;"
+                        i++;
+                    }
+
+                }else{
+
+                    this->in(temp2->data, -1);
+
+                    if(temp2->next != NULL){
+
+                        temp2 = temp2->next;
+
+                    }else{
+
+                        while(temp->next != NULL){
+
+                            this->in(temp->data, -1);
+                            temp = temp->next;
+                            i++;
+                        }
+
+                        this->in(temp->data, -1);   /// do{}while(); is not appropriate because of "temp = temp->next;"
+                        i++;
+                    }
+                }
+            }
+
+            return *this;
+        }
+    }
+
+    LinkedList& sort(){ /// Sorts the list in O(n * log(n)) using std::sort !
+
+        int nrOfEements = this->elements;
+
+        T values[nrOfEements];
+
+        for(int i = 0; i < nrOfEements; i++){
+
+            values[i] = this->first->data;
             this->out(0);
         }
 
-        first = l->first;
-        elements = nrOfEements;
+        std::sort(values, &values[nrOfEements]);
+
+        for(int i = 0; i < nrOfEements; i++){
+
+            this->in(values[i], -1);
+        }
+
+        this->elements = nrOfEements;
+
+        return *this;
     }
 
     void print(){   /// Prints the list
@@ -619,12 +789,18 @@ public:
 
     void check(){
 
-        std::cout << "first node: " << first << std::endl;
+        /// std::cout << std::endl;
         this->print();
         if(this->elements > 0){
-            std::cout << "first node: " << first << " last node: (" << last << " | " << last->data << " | " << last->next << ")" << std::endl;
+            std::cout << "first node address: " << first << " last node: (address: " << last << " | data: " << last->data << " | points to (should be 0) = " << last->next << ")" << std::endl;
         }else{
-            std::cout << "first node: " << first << " last node: (" << last << " | ? | ?)" << std::endl;
+            std::cout << "first node address: " << first << " last node address: " << last << std::endl;
         }
     }
 };
+
+}   /// End of namespace
+
+#undef left
+#undef right
+#endif /// DATASTRUCTURES_H_INCLUDED
