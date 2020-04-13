@@ -33,8 +33,8 @@ template <class T>
 struct DlNode{  /// for double linked lists & binary search trees
 
     T data;
-    DlNode *prev;   /// left (defined)
-    DlNode *next;   /// right (defined)
+    DlNode *prev;   /// *left (defined)
+    DlNode *next;   /// *right (defined)
 };
 
 template <class T>
@@ -46,6 +46,8 @@ private:
     Node<T>* last;
 
 public:
+
+    T err;  /// A default return value in the case of accesing a wrong parameter (Example: l[7] in a list with 3 elements)
 
     LinkedList(){   /// CONSTRUCTOR
 
@@ -60,24 +62,28 @@ public:
         last = NULL;
         elements = 0;
 
-        Node<T>* temp = new Node<T>;
-        temp = l.first;
-        this->in(temp->data, -1);   /// the argument "-1" puts the element at the end of the list (in O(1), that's because i'm a genius.. can't help it)
+        Node<T>* temp = l.first;
 
-        while(temp->next != NULL){
-            temp = temp->next;
-            this->in(temp->data, -1);
+        if(l.elements != 0){    /// if (l.elements == 0) is true, we do not need to do anything !
+                /// Also: if (l.elements == 0) is true, temp = NULL, that means "temp->data" and "temp->next" does not exist, so the program would crash !
+
+            this->in(temp->data, -1);   /// the argument "-1" puts the element at the end of the list (in O(1), that's because i'm a genius.. can't help it)
+
+            while(temp->next != NULL){
+                temp = temp->next;
+                this->in(temp->data, -1);
+            }
         }
 
+
+
         temp = NULL;
-        delete temp;
     }
 
     ~LinkedList(){  /// DESTRUCTOR
 
         while(first != NULL){
-            Node<T>* temp = new Node<T>;
-            temp = first;
+            Node<T>* temp = first;
             first = first->next;
             delete temp;
         }
@@ -87,25 +93,22 @@ public:
 
     LinkedList& operator=(const LinkedList& l){
 
-        if(l.elements == 0){  /// If the list is not empty, make it empty !
+        this->empty();
 
-            this->empty();
+        if(l.elements == 0){
+
             return *this;
         }
 
-        this->empty();
-
-        Node<T>* temp = new Node<T>;
-        temp = l.first;
-        this->in(temp->data, -1);   /// the argument "-1" puts the element at the end of the list (in O(1), that's because i'm a genius.. can't help it)
-
+        Node<T>* temp = l.first;
+        this->in(temp->data, -1);   /// the argument "-1" inserts the element at the end of the list (in O(1) - using a pointer to the end of the list...
+                                                                                            /// ...than, we move the pointer (*last) to the newly created node)
         while(temp->next != NULL){
             temp = temp->next;
             this->in(temp->data, -1);
         }
 
         temp = NULL;
-        delete temp;
 
         return *this;
     }
@@ -146,8 +149,7 @@ public:
 
         }else{  /// Introducem elementul la pozitia specificata in complexitate O(n)
 
-            Node<T>* temp = new Node<T>;
-            temp = first;
+            Node<T>* temp = first;
 
             for(int i = 1; i < position; i++){
             /// Parcurgem lista pana la elementul de pe pozitia dorita
@@ -177,8 +179,7 @@ public:
 
             if(position == 0){  /// Stergem primul element !
 
-                Node<T>* temp = new Node<T>;
-                temp = first;
+                Node<T>* temp = first;
                 first = first->next;
                 delete temp;
 
@@ -191,16 +192,20 @@ public:
 
             }else{
 
-                Node<T>* temp = new Node<T>;
-                temp = first;
+                Node<T>* temp = first;
+
                 for(int i = 1; i < position; i++){
+
                     temp = temp->next;
                 }
+
                 Node<T>* temp2 = temp;
-                    temp = temp->next;
-                    temp2->next = temp->next;
+                temp = temp->next;
+                temp2->next = temp->next;
                 delete temp;
+
                 if(position == (elements - 1)){
+
                     last = temp2;
                 }
                 elements--;
@@ -222,17 +227,22 @@ public:
     T& operator[](int position){  /// returns the element at specified position
 
         if(elements == 0){
+
             Errors(1);
+            return err;
+
         }else if((position == -1) || (position == (elements - 1))){
+
             return last->data;
+
         }else if((position < -1) || (position >= elements)){  /// Error: "Wrong parameter !"
 
             Errors(1);
+            return err;
 
         }else{
 
-            Node<T>* temp = new Node<T>;
-            temp = first;
+            Node<T>* temp = first;
 
             for(int i = 0; i < position; i++){
             /// Parcurgem lista pana la elementul de pe pozitia dorita
@@ -302,10 +312,8 @@ public:
                     this->in(item, 0);
                 }else{
 
-                    Node<T>* temp = new Node<T>;
-                    Node<T>* temp2 = new Node<T>;
-                    temp = first;
-                    temp2 = first;
+                    Node<T>* temp = first;
+                    Node<T>* temp2 = first;
 
                     while(item > temp->data){
                         temp2 = temp;
@@ -357,10 +365,8 @@ public:
                     return false;
                 }
 
-                Node<T>* left = new Node<T>;
-                left = this->first;
-                Node<T>* right = new Node<T>;
-                right = l.first;
+                Node<T>* left = this->first;
+                Node<T>* right = l.first;
 
                 while(left->next != NULL){  /// since they have the same number of elements there is no need to check if (right->next != NULL).
 
@@ -371,16 +377,14 @@ public:
 
                         left = NULL;
                         right = NULL;
-                        delete left;
-                        delete right;
+
                         return false;
                     }
                 }
 
                 left = NULL;
                 right = NULL;
-                delete left;
-                delete right;
+
                 return true;
             }
         }
@@ -439,10 +443,8 @@ public:
 
         /// If we got so far, it means that both lists have the same first element and at least 2 elements each. => first->next exist for both lists !
 
-        Node<T>* left = new Node<T>;
-        left = this->first;
-        Node<T>* right = new Node<T>;
-        right = l.first;
+        Node<T>* left = this->first;
+        Node<T>* right = l.first;
 
         while(left->next != NULL){
 
@@ -450,8 +452,6 @@ public:
 
                 left = NULL;
                 right = NULL;
-                delete left;
-                delete right;
 
                 return false;
             }
@@ -463,8 +463,6 @@ public:
 
                 left = NULL;
                 right = NULL;
-                delete left;
-                delete right;
 
                 return true;
 
@@ -472,8 +470,6 @@ public:
 
                 left = NULL;
                 right = NULL;
-                delete left;
-                delete right;
 
                 return false;
             }
@@ -491,8 +487,6 @@ public:
 
         left = NULL;
         right = NULL;
-        delete left;
-        delete right;
 
         return true;
     }
@@ -545,10 +539,8 @@ public:
 
         /// If we got so far, it means that both lists have the same first element and at least 2 elements each. => first->next exist for both lists !
 
-        Node<T>* left = new Node<T>;
-        left = this->first;
-        Node<T>* right = new Node<T>;
-        right = l.first;
+        Node<T>* left = this->first;
+        Node<T>* right = l.first;
 
         while(left->next != NULL){
 
@@ -556,8 +548,6 @@ public:
 
                 left = NULL;
                 right = NULL;
-                delete left;
-                delete right;
 
                 return true;
             }
@@ -569,8 +559,6 @@ public:
 
                 left = NULL;
                 right = NULL;
-                delete left;
-                delete right;
 
                 return true;
 
@@ -578,8 +566,6 @@ public:
 
                 left = NULL;
                 right = NULL;
-                delete left;
-                delete right;
 
                 return false;
             }
@@ -597,8 +583,6 @@ public:
 
         left = NULL;
         right = NULL;
-        delete left;
-        delete right;
 
         return false;
     }
@@ -615,9 +599,23 @@ public:
 
     LinkedList& operator+(const LinkedList& l){
 
-        LinkedList *sum = new LinkedList;
+        if(this->elements == 0){
+
+            LinkedList<T> *supplement = new LinkedList<T>;
+            *supplement = l;
+            return *supplement;
+        }
+
+        if(l.elements == 0){
+
+            LinkedList<T> *supplement = new LinkedList<T>;
+            *supplement = *this;
+            return *supplement;
+        }
+
+        LinkedList<T> *sum = new LinkedList<T>;
         *sum = *this;
-        LinkedList *supplement = new LinkedList;
+        LinkedList<T> *supplement = new LinkedList<T>;
         *supplement = l;
         sum->last->next = supplement->first;
         sum->last = supplement->last;
@@ -628,7 +626,18 @@ public:
 
     LinkedList& operator+=(const LinkedList& l){
 
-        LinkedList *supplement = new LinkedList;
+        if(this->elements == 0){
+
+            *this = l;
+            return *this;
+        }
+
+        if(l.elements == 0){
+
+            return *this;
+        }
+
+        LinkedList<T> *supplement = new LinkedList<T>;
         *supplement = l;
         this->last->next = supplement->first;
         this->last = supplement->last;
@@ -641,36 +650,35 @@ public:
 
         LinkedList *dif = new LinkedList;
         *dif = *this;
-        LinkedList *drop = new LinkedList;
-        *drop = l;
 
-        if(drop->elements == 0){
+        if((l.elements == 0) || (dif->elements == 0)){
 
             return *dif;
         }
 
+        LinkedList drop = l;
+
         for(int i = 0; i < l.elements; i++){
 
-            *dif << (drop->first->data);
-            drop->out(0);
+            *dif << (drop.first->data);
+            drop.out(0);
         }
         return *dif;
     }
 
     LinkedList& operator-=(const LinkedList& l){
 
-        LinkedList *drop = new LinkedList;
-        *drop = l;
-
-        if(drop->elements == 0){
+        if((l.elements == 0) || (this->elements == 0)){
 
             return *this;
         }
 
+        LinkedList drop = l;
+
         for(int i = 0; i < l.elements; i++){
 
-            *this << (drop->first->data);
-            drop->out(0);
+            *this << (drop.first->data);
+            drop.out(0);
         }
         return *this;
     }
