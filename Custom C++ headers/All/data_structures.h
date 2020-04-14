@@ -3,11 +3,6 @@
 
 #include <iostream>
 #include <algorithm>
-#include <stack>
-#include <queue>
-
-#define left prev
-#define right next
 
 namespace dtk{  /// Darius The King ;)
 
@@ -33,12 +28,12 @@ template <class T>
 struct DlNode{  /// for double linked lists & binary search trees
 
     T data;
-    DlNode *prev;   /// *left (defined)
-    DlNode *next;   /// *right (defined)
+    DlNode *left;
+    DlNode *right;
 };
 
 template <class T>
-class LinkedList{
+class LList{
 private:
 
     int elements;
@@ -49,14 +44,14 @@ public:
 
     T err;  /// A default return value in the case of accesing a wrong parameter (Example: l[7] in a list with 3 elements)
 
-    LinkedList(){   /// CONSTRUCTOR
+    LList(){   /// CONSTRUCTOR
 
         first = NULL;
         last = NULL;
         elements = 0;
     }
 
-    LinkedList(const LinkedList& l){   /// COPY CONSTRUCTOR
+    LList(const LList& l){   /// COPY CONSTRUCTOR
 
         first = NULL;
         last = NULL;
@@ -80,18 +75,17 @@ public:
         temp = NULL;
     }
 
-    ~LinkedList(){  /// DESTRUCTOR
+    ~LList(){  /// DESTRUCTOR
 
         while(first != NULL){
+
             Node<T>* temp = first;
             first = first->next;
             delete temp;
         }
-        delete first;
-        delete last;
     }
 
-    LinkedList& operator=(const LinkedList& l){
+    LList& operator=(const LList& l){
 
         this->empty();
 
@@ -117,7 +111,7 @@ public:
         return elements;
     }
 
-    LinkedList& in(T item, int position){  /// inserts the specified item at specified position (-1 means at the end)
+    LList& in(T item, int position){  /// inserts the specified item at specified position (-1 means at the end)
 
         if(position == 0){  /// Introducem elementul la inceput in complexitate O(1)
 
@@ -164,7 +158,7 @@ public:
         return *this;
     }
 
-    LinkedList& out(int position){ /// removes the element at specified position
+    LList& out(int position){ /// removes the element at specified position
 
         if(elements == 0){
 
@@ -214,7 +208,7 @@ public:
         return *this;
     }
 
-    LinkedList& empty(){
+    LList& empty(){
 
         int limit = this->elements;
         for(int i = 0; i < limit; i++){
@@ -252,7 +246,7 @@ public:
         }
     }
 
-    LinkedList& operator<<(T value){ /// removes the element with specified value (only the first one, in case it repeats)
+    LList& operator<<(T value){ /// removes the element with specified value (only the first one, in case it repeats)
 
         if(elements == 0){
 
@@ -293,7 +287,7 @@ public:
         return *this;
     }
 
-    LinkedList& operator>>(T item){    /// If the list is sorted, inserts an element to it's appropriate position.
+    LList& operator>>(T item){    /// If the list is sorted, inserts an element to it's appropriate position.
 
         if(elements == 0){
 
@@ -332,7 +326,7 @@ public:
         return *this;
     }
 
-    bool operator==(const LinkedList& l){
+    bool operator==(const LList& l){
 
         if(this->elements != l.elements){
 
@@ -390,12 +384,12 @@ public:
         }
     }
 
-    bool operator!=(const LinkedList& l){
+    bool operator!=(const LList& l){
 
         return !(*this == l);
     }
 
-    bool operator<(const LinkedList& l){
+    bool operator<(const LList& l){
 
         if((this->elements == 0) && (l.elements != 0)){
 
@@ -491,7 +485,7 @@ public:
         return true;
     }
 
-    bool operator>(const LinkedList& l){
+    bool operator>(const LList& l){
 
         if((this->elements == 0) && (l.elements != 0)){
 
@@ -587,35 +581,35 @@ public:
         return false;
     }
 
-    bool operator<=(const LinkedList& l){
+    bool operator<=(const LList& l){
 
         return !(*this > l);
     }
 
-    bool operator>=(const LinkedList& l){
+    bool operator>=(const LList& l){
 
         return !(*this < l);
     }
 
-    LinkedList& operator+(const LinkedList& l){
+    LList& operator+(const LList& l){
 
         if(this->elements == 0){
 
-            LinkedList<T> *supplement = new LinkedList<T>;
+            LList<T> *supplement = new LList<T>;
             *supplement = l;
             return *supplement;
         }
 
         if(l.elements == 0){
 
-            LinkedList<T> *supplement = new LinkedList<T>;
+            LList<T> *supplement = new LList<T>;
             *supplement = *this;
             return *supplement;
         }
 
-        LinkedList<T> *sum = new LinkedList<T>;
+        LList<T> *sum = new LList<T>;
         *sum = *this;
-        LinkedList<T> *supplement = new LinkedList<T>;
+        LList<T> *supplement = new LList<T>;
         *supplement = l;
         sum->last->next = supplement->first;
         sum->last = supplement->last;
@@ -624,7 +618,7 @@ public:
         return *sum;
     }
 
-    LinkedList& operator+=(const LinkedList& l){
+    LList& operator+=(const LList& l){
 
         if(this->elements == 0){
 
@@ -637,7 +631,7 @@ public:
             return *this;
         }
 
-        LinkedList<T> *supplement = new LinkedList<T>;
+        LList<T> *supplement = new LList<T>;
         *supplement = l;
         this->last->next = supplement->first;
         this->last = supplement->last;
@@ -646,9 +640,9 @@ public:
         return *this;
     }
 
-    LinkedList& operator-(const LinkedList& l){
+    LList& operator-(const LList& l){
 
-        LinkedList *dif = new LinkedList;
+        LList *dif = new LList;
         *dif = *this;
 
         if((l.elements == 0) || (dif->elements == 0)){
@@ -656,7 +650,7 @@ public:
             return *dif;
         }
 
-        LinkedList drop = l;
+        LList drop = l;
 
         for(int i = 0; i < l.elements; i++){
 
@@ -666,14 +660,14 @@ public:
         return *dif;
     }
 
-    LinkedList& operator-=(const LinkedList& l){
+    LList& operator-=(const LList& l){
 
         if((l.elements == 0) || (this->elements == 0)){
 
             return *this;
         }
 
-        LinkedList drop = l;
+        LList drop = l;
 
         for(int i = 0; i < l.elements; i++){
 
@@ -683,7 +677,7 @@ public:
         return *this;
     }
 
-    LinkedList& fuse(const LinkedList& l){    /// Merge 2 lists together. If both lists are sorted, the resulting one will be sorted in O(n).
+    LList& fuse(const LList& l){    /// Merge 2 lists together. If both lists are sorted, the resulting one will be sorted in O(n).
 
         if(elements == 0){  /// If *this is empty
 
@@ -697,7 +691,7 @@ public:
         }else{  /// None of the lists is empty !
 
             int limit = this->elements + l.elements;
-            LinkedList<T> k = *this;
+            LList<T> k = *this;
             Node<T> *temp = k.first;    /// LIST 1
             Node<T> *temp2 = l.first;   /// LIST 2
             this->empty();              /// RESULT
@@ -752,7 +746,7 @@ public:
         }
     }
 
-    LinkedList& sort(){ /// Sorts the list in O(n * log(n)) using std::sort !
+    LList& sort(){ /// Sorts the list in O(n * log(n)) using std::sort !
 
         int nrOfEements = this->elements;
 
@@ -774,6 +768,29 @@ public:
         this->elements = nrOfEements;
 
         return *this;
+    }
+
+    LList& enqueue(T item){
+
+        this->in(item, -1);
+        return *this;
+    }
+
+    LList& push(T item){
+
+        this->in(item, 0);
+        return *this;
+    }
+
+    LList& pop(){
+
+        this->out(0);
+        return *this;
+    }
+
+    T& top(){
+
+        return (*this)[0];
     }
 
     void print(){   /// Prints the list
@@ -809,6 +826,4 @@ public:
 
 }   /// End of namespace
 
-#undef left
-#undef right
 #endif /// DATASTRUCTURES_H_INCLUDED
