@@ -20,5 +20,5 @@
         /// cl  cr                         |
 ```
 
-The main.cpp implements a versatile API used to test the data structures. Here is a labeled screenshoot: <br>
+- The main.cpp implements a versatile API used to test the data structures. Here is a labeled screenshoot: <br>
 <img src="https://github.com/24Arys11/Programare-Orientata-pe-Obiecte/blob/master/Custom%20C%2B%2B%20headers/Sorted/Data%20Structures/Screenshot.jpg" alt="Screenshot" width="800"/>
