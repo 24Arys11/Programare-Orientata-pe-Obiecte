@@ -1,4 +1,4 @@
-# Programare orientata pe obiecte
+# Object Oriented Programming in C++
 
 ## Custom C++ headers contains 2 awesome projects:
 * Data Structures - implements a handfull of usefull datastructures as templated Classes: a Linked List, an AVL tree and I'm working on a Graph (not ready yet).
