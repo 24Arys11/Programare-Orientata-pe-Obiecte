@@ -75,12 +75,9 @@ private:
         const std::string invalidInputMessage = "Please insert a positive integer coresponding to a valid menu option !";
 
         std::cout << inputTag;
-
-        // std::cin >> s; - stops at space characters, not just at new lines.
-        // getline(std::cin, s); - only works reliably if istream buffer is cleared.
-        // scanf(" "); - clears istream input buffer.
-        scanf(" ");
-        getline(std::cin, s);
+		
+		// clears the input buffer and getline(std::cin, s);
+		scanLine(s);
         
         if (s.empty()) {
 
@@ -217,6 +214,14 @@ public:
             }
         }
     }
+	
+	static void scanLine(std::string& s)
+	{
+		// clear the input buffer.
+        scanf(" ");
+		
+        getline(std::cin, s);
+	}
 
 };
 
