@@ -131,12 +131,8 @@ public:
 			case changeNickname:
 				std::cout << "New username: ";
 				std::string newUser;
-
-				// std::cin >> s; - stops at space characters, not just at new lines.
-				// getline(std::cin, s); - only works reliably if istream buffer is cleared.
-				// scanf(" "); - clears istream input buffer.
-				scanf(" ");
-				getline(std::cin, newUser);
+				
+				Menu::scanLine(newUser);
 
 				mainMenu.setInputTag(newUser);
 				newGameMenu.setInputTag(newUser);
