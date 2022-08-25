@@ -28,12 +28,12 @@ bool isNotEqual(T a, T b){
 
 template <class T>
 bool isNull(T a){
-	return a == NULL;
+	return a == nullptr;
 }
 
 template <class T>
 bool isNotNull(T a){
-	return a != NULL;
+	return a != nullptr;
 }
 
 template <class T>
